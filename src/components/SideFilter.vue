@@ -99,6 +99,7 @@
   export default {
     props: ['category'],
     data: () => ({
+      //the whole data from api is stored in brewries
       breweries: [],
       isLoading: false,
       tree: [],

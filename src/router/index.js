@@ -5,7 +5,7 @@ import Login from '@/components/Login';
 import Cockpit from '@/components/Cockpit';
 import Tree from '@/components/Tree';
 import Newtree from '@/components/Newtree';
-import Tab from '@/components/Tab';
+import Search from '@/components/Search';
 
 Vue.use(Router);
 
@@ -38,9 +38,9 @@ export default new Router({
       component: Newtree,
     },
     {
-      path: '/tab',
-      name: 'Tab',
-      component: Tab,
+      path: '/search',
+      name: 'Search',
+      component: Search,
     },
   ],
 });
