@@ -26,12 +26,12 @@
                 <v-card-actions>
 
                     <div class="text-xs-center">
-                      <v-chip :class="{success: lActive}" @click="get('lActive', 'bundesland='+posts.region.bundesland)" v-if="posts.region.bundesland">{{ posts.region.bundesland}}</v-chip>
-                      <v-chip :class="{warning: gActive}"  @click="get('gActive', 'group=' + posts.bereich.group), bundesland_val(posts.region.bundesland)" v-if="posts.bereich.group">{{ posts.bereich.group}}</v-chip>
-                      <v-chip :class="{error: gtActive}" @click="get('gtActive', 'group=' + posts.bereich.group + '&groupType=' + posts.bereich.group_type)" v-if="posts.bereich.group_type">{{ posts.bereich.group_type}}</v-chip>
-                      <v-chip :class="{info: gtsActive}" @click="get('gtsActive', 'group=' + posts.bereich.group + '&groupType=' + posts.bereich.group_type + '&groupStack=' + posts.bereich.group_type_stack)" v-if="posts.bereich.group_type_stack">{{ posts.bereich.group_type_stack}}</v-chip>
+                      <v-chip :class="{success: lActive}" @click="lActive = !lActive, get('bundesland='+posts.region.bundesland, posts.region.bundesland)" v-if="posts.region.bundesland">{{ posts.region.bundesland}}</v-chip>
+                      <v-chip :class="{warning: gActive}"  @click="gActive = !gActive, get('group=' + posts.bereich.group, posts.region.bundesland)" v-if="posts.bereich.group">{{ posts.bereich.group}}</v-chip>
+                      <v-chip :class="{error: gtActive}" @click="gtActive = !gtActive, get('groupType=' + posts.bereich.group_type, posts.region.bundesland)" v-if="posts.bereich.group_type">{{ posts.bereich.group_type}}</v-chip>
+                      <v-chip :class="{info: gtsActive}" @click="gtsActive = !gtsActive,get('groupStack=' + posts.bereich.group_type_stack, posts.region.bundesland)" v-if="posts.bereich.group_type_stack">{{ posts.bereich.group_type_stack}}</v-chip>
                       <!--encodeURIComponent used to encode c# due to error caused by # -->
-                      <v-chip :class="{purple: skActive}" @click="get('skActive', 'skill=' +  encodeURIComponent(posts.bereich.skill))" v-if="posts.bereich.skill">{{ posts.bereich.skill}}</v-chip>
+                      <v-chip :class="{purple: skActive}" @click="skActive = !skActive, get('skill=' +  encodeURIComponent(posts.bereich.skill), posts.region.bundesland)" v-if="posts.bereich.skill">{{ posts.bereich.skill}}</v-chip>
                     </div>
                      
                        <!--<v-chip v-if="posts.skill_summary">{{ posts.skill_summary}}</v-chip>
@@ -185,55 +185,87 @@ export default {
       }
     },
     created() {
-      this.fetchData(this.section)
       this.reset()
-      
     },
 
     
     methods: {
+
      //toggles color of tags clicked
-      get(card, param) {
+      get(param, loc) {
         //this is added to change the url back to default when a chip is clicked after a search result
         //this.url = 'http://127.0.0.1:5000/api/'
-        if (card === 'skActive') {
-          this.skActive = !this.skActive
-          if (this.gActive) {
+        if (this.lActive) {
+          this.fetchData(param)
+        } 
+        else if (this.gActive) {
             this.fetchData(param)
           }
-        }
-        else if (card === 'gActive') {
-          this.gActive = !this.gActive
-          if (this.gActive) {
+        else if (this.gtActive) {
             this.fetchData(param)
           }
-        }
-        else if (card === 'gtActive') {
-          this.gtActive = !this.gtActive
-          if (this.gActive) {
+        else if (this.gtsActive) {
             this.fetchData(param)
           }
-        }
-        else if (card === 'gtsActive') {
-          this.gtsActive = !this.gtsActive
-          if (this.gActive) {
+        else if (this.skActive) {
             this.fetchData(param)
           }
+        else {
+          this.fetchData('')
         }
-        else if (card === 'lActive') {
-          this.lActive = !this.lActive
-          if (this.lActive) {
-            this.fetchData(param)
-          }
-          else if (this.gActive || this.gtActive || this.gtsActive || this.skActive) {
-            this.fetchData()
-          }
-          
-          //this.url = 'http://127.0.0.1:5000/api/?bundesland='
-           
-        }
-        
       },
+          // this.skActive = !this.skActive
+          // if (this.skActive) {
+          //   this.fetchData(param)
+          // }
+          // else {
+          //   this.fetchData('')
+          // }
+        //}
+        // else if (card === 'gActive') {
+        //   this.gActive = !this.gActive
+        //   if (this.gActive) {
+        //     this.fetchData(param)
+        //   }
+        //   else {
+        //     this.fetchData('')
+        //   }
+        // }
+        // else if (card === 'gtActive') {
+        //   this.gtActive = !this.gtActive
+        //   if (this.gtActive) {
+        //     this.fetchData(param)
+        //   }
+        //   else {
+        //     this.fetchData('')
+        //   }
+        // }
+        // else if (card === 'gtsActive') {
+        //   this.gtsActive = !this.gtsActive
+        //   if (this.gtsActive) {
+        //     this.fetchData(param)
+        //   }
+        //   else {
+        //     this.fetchData('')
+        //   }
+        // }
+        // else if (card === 'lActive') {
+        //   this.lActive = !this.lActive
+        //   if (this.lActive) {
+        //     this.fetchData(param)
+        //   }
+        //   else {
+        //     this.fetchData('')
+        //   }
+        //   // else if (this.gActive || this.gtActive || this.gtsActive || this.skActive) {
+        //   //   this.fetchData()
+        //   // }
+          
+        //   //this.url = 'http://127.0.0.1:5000/api/?bundesland='
+           
+        // }
+        
+     
       //to toggle the style class in any element
       //this toggles the error--text class when button is clicked
       myToggleFunction: function(event){
@@ -265,6 +297,8 @@ export default {
         this.skActive = false
         this.lActive = false
         this.link = ''
+        this.section = ''
+        this.fetchData(this.section)
       },
        // Create an array the length of our items
       // with all values as true
@@ -299,16 +333,17 @@ export default {
       //fetchs data from API
       fetchData(section) {
         let a 
-        if (this.lActive && this.gActive) {
-          a = this.url +section + '&' + this.link
-        }
-        else if (this.lActive) {
-          a = this.url + '&' +section
+        a = this.url + section
+        // if (this.lActive && this.gActive) {
+        //   a = this.url +section + '&' + this.link
+        // }
+        // else if (this.lActive) {
+        //   a = this.url + '&' +section
 
-        }
-        else {
-          a = this.url +section
-        }
+        // }
+        // else {
+        //   a = this.url +section
+        // }
         
         axios.get(a)
         .then((resp) => {
@@ -332,8 +367,6 @@ export default {
       //refreshes the homepage
       refreshHome: function() {
         console.log(this.refreshHome)
-        this.url = 'http://127.0.0.1:5000/api/?'
-        this.fetchData('')
         this.reset()
 
       },
@@ -342,7 +375,7 @@ export default {
         //checks if theres any letter is enterd in search bar. 
         if (this.search_term.length <=1) {
           //if none, it changes the url to home 
-          this.url = 'http://127.0.0.1:5000/api/'
+          this.url = 'http://127.0.0.1:5000/api/?'
           //and it returns all projects
           this.fetchData(this.section)
         }
